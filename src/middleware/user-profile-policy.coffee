@@ -15,7 +15,7 @@ module.exports = (req, res, next) ->
           when 'equals'
             pathOperand == curr.valueOperand
           when 'equalsIgnoreCase'
-            pathOperand?.toLowerCase? and pathOperand?.toLowerCase() == curr.valueOperand
+            pathOperand?.toLowerCase? and pathOperand.toLowerCase() == curr.valueOperand
           when 'includes'
             pathOperand?.includes? and pathOperand.includes curr.valueOperand
           when 'inList'
