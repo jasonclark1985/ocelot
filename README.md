@@ -111,6 +111,7 @@ internal (Boolean): Ocelot runs the proxy on two ports. The second port is consi
 * **scope (String):** An optional property usually used to enable OpenId
 * **cookie-path (String):** Overrides the default cookie path, which is set to the path of the route.
 * **cookie-domain (String):** Overrides the default cookie domain, which is set to the domain of the route.
+* **verbose-audit (Boolean):** Defines whether a log entry is written to the Ocelot log when proxying to the route.  If this property is not defined, a log entry is written upon proxying.
 
 Example environment variable backend:
 ```javascript
