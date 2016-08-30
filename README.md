@@ -104,10 +104,10 @@ The backend is a property in the router config that specifies the datastore wher
 * **user-header (String):** When the user can be determined by successful validation of the OAuth token, the user's ID will be added to the proxied request in an HTTP header with this name.
 client-header (String): When the calling client (application) can be determined by successful validation of the OAuth token, the client's ID will be added to the proxied request in an HTTP header with this name.
 * **custom-headers (?):** Add these static proxy headers to the request.
-* **ent-app-id (String):** When user-profile-enabled, use this entitlement app ID to replace $appId in the profile endpoint to load the user's profile. This is optional and only required if the profile endpoint needs to know what application the user belongs to.
+* **ent-app-id (String or String[]):** When user-profile-enabled, use this entitlement app ID to replace $appId in the profile endpoint to load the user's profile. This is optional and only required if the profile endpoint needs to know what application the user belongs to.
 * **user-profile-enabled (Boolean):** When a user can be determined based on validation of the OAuth token, call the profile endpoint to get the user's profile. Add the user-profile header with the result, usually JSON formatted.
-* **elevated-trust (Boolean):** Normally the user-header is protected in that it is non-spoofable and cannot be send into Ocelot; it can only come from validation of the OAuth token. Sometimes you want trusted clients to be able to pass in the user and for Ocelot to treat that the same as if it came from the OAuth token. Use this flag to allow this flow. This can be a pretty dangerous setting, so use it with care.
-internal (Boolean): Ocelot runs the proxy on two ports. The second port is considered the internal traffic port. Set internal to true if you only want it accessible from the internal port.
+* **elevated-trust (String[]):** Normally the user-header is protected in that it is non-spoofable and cannot be send into Ocelot; it can only come from validation of the OAuth token. Sometimes you want whitelisted clients to be able to pass in the user and for Ocelot to treat that the same as if it came from the OAuth token. If a client is whitelisted and no user can be determined via token validation (client credentials), adding the client ID to the elevated trust array allows them to pass the user header. 
+* **internal (Boolean):** Ocelot runs the proxy on two ports. The second port is considered the internal traffic port. Set internal to true if you only want it accessible from the internal port.
 * **hosts (Array of Strings):** The hosts array is used to determine what the backend hosts are that we are proxying to. It is similar to the service array, but instead of a reference to another collection of URLs by name these are the actual URL values. This is simpler than using the services property and usually they are not used together.
 * **cookie-name (String):** Used in conjunction with the require-auth property, this property enables UI support for the route. When the cookie-name is set Ocelot will check incoming requests first for Authorization bearer tokens but will fall back to checking for this cookie. If the token cannot be found Ocelot redirects to the auth-endpoint URL with a redirect back to the current URL /receive-auth-token. The purpose of this is to use the auth flow in OAuth to generate a token, which will then be set back on the browser with this cookie name. When using this property both client-id and client-secret are required.
 * **client-id (String):** The OAuth client id used to exchange the user's login code for a token.
@@ -115,6 +115,12 @@ internal (Boolean): Ocelot runs the proxy on two ports. The second port is consi
 * **scope (String):** An optional property usually used to enable OpenId
 * **cookie-path (String):** Overrides the default cookie path, which is set to the path of the route.
 * **cookie-domain (String):** Overrides the default cookie domain, which is set to the domain of the route.
+* **user-profile-policy (Object):** This is a security policy that runs in Ocelot to filter out unwanted requests using the response from the profile service. 
+ * **rules (Object[]):**  A set of rules. If any rule passes, the request is proxied. If not, a forbidden or redirect is returned. Think of the rules in text form: "user.roles includes admin" will allow the request through if the user profile response contains a user.roles array that contains the value "admin"
+  * **pathOperand (String):** A JSON path to a property within the profile response. 
+  * **operator (String):** equals, equalsIgnoreCase, includes, inList
+  * **valueOperand (String):** A static value used to evaluate something in the profile response.
+ * **redirect (String):** If defined, Ocelot will give a redirect instead of a forbidden. 
 
 Example environment variable backend:
 ```javascript
