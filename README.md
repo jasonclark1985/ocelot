@@ -22,6 +22,8 @@ default-protocol: This is the protocol you want to use to redirect Browsers back
   * **token-endpoint (String):** The OAuth token endpoint URL
   * **auth-endpoint (String):** The OAuth auth endpoint URL
   * **profile-endpoint (String):** If a user can be determined, load the user details by using this URL template. Use $userId and $appId to format the URL appropriately.
+  * **user-path (String):** The JSON path to the user identitifer in the OAuth token validation response.
+  * **client-path (String):** The JSON path to the client identifier in the OAuth token validation response.
 * **backend (Object):**
   * **provider (String):** The type of backend you are using
   * **other properties (?):** Each backend has other config props depending on the provider
@@ -36,6 +38,8 @@ module.exports =
     "token-endpoint": "https://authserver.local/as/token.oauth2"
     "auth-endpoint": "https://autherserver.local/as/authorization.oauth2"
     "profile-endpoint": "https://profileapi.local/users/$userId?fields=id,firstName,lastName,entitlements,email,fullName&apps=$appId"
+    "user-path": "user_id"
+    "client-path": "client_id"
 
   "cors-domains": ["localhost"]
   "api-clients": ["OCELOT-UI"]
@@ -100,7 +104,7 @@ The backend is a property in the router config that specifies the datastore wher
 * **user-header (String):** When the user can be determined by successful validation of the OAuth token, the user's ID will be added to the proxied request in an HTTP header with this name.
 client-header (String): When the calling client (application) can be determined by successful validation of the OAuth token, the client's ID will be added to the proxied request in an HTTP header with this name.
 * **custom-headers (?):** Add these static proxy headers to the request.
-ent-app-id (String): When user-profile-enabled, use this entitlement app ID to replace $appId in the profile endpoint to load the user's profile. This is optional and only required if the profile endpoint needs to know what application the user belongs to.
+* **ent-app-id (String):** When user-profile-enabled, use this entitlement app ID to replace $appId in the profile endpoint to load the user's profile. This is optional and only required if the profile endpoint needs to know what application the user belongs to.
 * **user-profile-enabled (Boolean):** When a user can be determined based on validation of the OAuth token, call the profile endpoint to get the user's profile. Add the user-profile header with the result, usually JSON formatted.
 * **elevated-trust (Boolean):** Normally the user-header is protected in that it is non-spoofable and cannot be send into Ocelot; it can only come from validation of the OAuth token. Sometimes you want trusted clients to be able to pass in the user and for Ocelot to treat that the same as if it came from the OAuth token. Use this flag to allow this flow. This can be a pretty dangerous setting, so use it with care.
 internal (Boolean): Ocelot runs the proxy on two ports. The second port is considered the internal traffic port. Set internal to true if you only want it accessible from the internal port.
