@@ -116,7 +116,7 @@ client-header (String): When the calling client (application) can be determined 
 * **cookie-path (String):** Overrides the default cookie path, which is set to the path of the route.
 * **cookie-domain (String):** Overrides the default cookie domain, which is set to the domain of the route.
 * **audit-log (Boolean):** Defines whether a log entry is written to the Ocelot log when proxying to the route.  If this property is not defined, a log entry is written upon proxying.
-* **user-profile-policy (Object):** This is a security policy that runs in Ocelot to filter out unwanted requests using the response from the profile service. 
+* **user-profile-policy (Object):** This is a security policy that runs in Ocelot to filter out unwanted requests using the response from the profile service.
  * **rules (Object[]):**  A set of rules. If any rule passes, the request is proxied. If not, a forbidden or redirect is returned. Think of the rules in text form: "user.roles includes admin" will allow the request through if the user profile response contains a user.roles array that contains the value "admin"
   * **pathOperand (String):** A JSON path to a property within the profile response.
   * **operator (String):** equals, equalsIgnoreCase, includes, inList
