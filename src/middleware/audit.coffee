@@ -16,7 +16,8 @@ module.exports = (req, res, next) ->
         elapsed_ms: new Date().getTime() - req._time
         routeKey: req._route?.route or "unknown"
 
-      log.verbose "AUDIT", metadata
+      if req._route?["audit-log"] or (not req._route?.hasOwnProperty("audit-log"))
+        log.verbose "AUDIT", metadata
 
     res.on 'finish', doAudit
     res.on 'close', doAudit
